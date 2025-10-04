@@ -1,0 +1,40 @@
+{
+    "remap" : {
+        "B3" : "B1",
+        "B4" : "B2",
+        "B11" : "B3",
+        "B6" : "B4",
+        "B10" : "B5",
+        "B9" : "B6",
+        "B2" : "B7",
+        "B8" : "B8",
+        "B1" : "B9",
+        "B7" : "B10",
+        "B5" : "B11"
+    },
+    "botones":
+        {
+            "B1" : {
+                "accion" : "mute"
+            },
+            "B2" : {
+                "accion" : "grabar"
+            },
+            "B4" : {
+                "accion" : "escena",
+                "data" : "Mi careto"
+            },
+            "B5" : {
+                "accion" : "escena",
+                "data" : "Principal"
+            },
+            "B6" : {
+                "accion" : "escena",
+                "data" : "rust temp"
+            },
+            "B7" : {
+                "accion" : "escena",
+                "data" : "Sacabao"
+            }
+        }
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col">
+                <!-- <table class="tbl">
+                    <tr>
+                        <td><div class="btn potenciometro"></div></td>
+                        <td><div class="btn potenciometro"></div></td>
+                        <td><div class="btn potenciometro"></div></td>
+                        <td><div class="btn potenciometro"></div></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B10"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B9"></div></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B11"></div></td>
+                    </tr>
+                    <tr>
+                        <td><div class="btn boton" id="B4"></div></td>
+                        <td><div class="btn boton" id="B5"></div></td>
+                        <td><div class="btn boton" id="B6"></div></td>
+                        <td><div class="btn boton" id="B7"></div></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B8"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="btn boton" id="B1"></div></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B2"></div></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B3"></div></td>
+                    </tr>
+                </table> -->
+                <table class="tbl">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B15"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="btn boton" id="B10"></div></td>
+                        <td><div class="btn boton" id="B11"></div></td>
+                        <td><div class="btn boton" id="B12"></div></td>
+                        <td><div class="btn boton" id="B13"></div></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B14"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="btn boton" id="B5"></div></td>
+                        <td><div class="btn boton" id="B6"></div></td>
+                        <td><div class="btn boton" id="B7"></div></td>
+                        <td><div class="btn boton" id="B8"></div></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B9"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B4"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="btn boton" id="B1"></div></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B2"></div></td>
+                        <td></td>
+                        <td><div class="btn boton" id="B3"></div></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Modales -->
+        <div id="modalConfiguracionBoton" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Configurar botón</h5>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <label class="input-group-text" for="btnID">Botón</label>
+                            </div>
+                            <input type="text" class="form-control" id="btnID" disabled aria-describedby="btnID">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <label class="input-group-text" for="btnAccion">Acción</label>
+                            </div>
+                            <select class="custom-select" id="btnAccion">
+                                <option value="none">Sin acción</option>
+                                <option value="grabar">Grabar</option>
+                                <option value="mute">Mutear</option>
+                                <option value="sonido">Reproducir sonido</option>
+                                <option value="stop_sonido">Parar Reproducción de sonido</option>
+                                <option value="escena">Cambiar escena</option>
+                                <option value="sonido_escena">Reproducir sonido y cambiar escena</option>
+                                <option value="ensordecer">Ensordecer (discord)</option>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <label class="input-group-text" for="btnData">Datos adicionales</label>
+                            </div>
+                            <input type="text" class="form-control" id="btnData" aria-describedby="btnData" placeholder="Id del sonido, nombre de la escena, etc">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="btnGuardarConfiguracionBoton">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- /Modales -->
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/custom_scr.js') }}"></script>
+</html>

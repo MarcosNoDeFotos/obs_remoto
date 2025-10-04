@@ -1,0 +1,71 @@
+{
+    "output_file": "settings.json",
+    "participar": {
+        "type": "textbox",
+        "value": "participo",
+        "label": "Comando para participar",
+        "tooltip": "Comando que usarán los espectadores para participar. Para usarlo se deberá escribir ! seguido de el comando (Ej.: !participo, !sorteo)"
+    },
+    "comando_ver_objeto_sorteo": {
+        "type": "textbox",
+        "value": "sorteo",
+        "label": "Comando para ver el objeto que se sortea y el número de participantes",
+        "tooltip": "Comando que usarán los espectadores para ver el objeto que se sorteará y el número de participantes. Para usarlo se deberá escribir ! seguido de el comando (Ej.: !sorteo, !datossorteo)"
+    },
+    "objeto_sorteo": {
+        "type": "textbox",
+        "value": "",
+        "label": "Objeto a sortear",
+        "tooltip": "Objeto que se sorteará"
+    },
+    "permisos_participar": {
+        "type": "dropdown",
+        "value": "Everyone",
+        "items": ["Everyone","Regular","Subscriber","Moderator","Editor", "Streamer"],
+        "label": "Permisos para participar en el  sorteo",
+        "tooltip": "Quién podrá participar en el sorteo"
+    },
+    "ruta_exportacion_fichero": {
+        "type": "textbox",
+        "value": "C:/Usuarios/Marcos/Documentos",
+        "label": "Ruta exportación de participantes",
+        "tooltip": "Ruta donde se guardará el csv con los nombres de los participantes cuando se pare el sorteo",
+        "group": "Administración Sorteo"
+    },
+    "comando_parar_sorteo": {
+        "type": "textbox",
+        "value": "pararsorteo",
+        "label": "Comando para parar el sorteo",
+        "tooltip": "Al ejecutar el comando, los participantes no podrán participar más",
+        "group": "Administración Sorteo"
+    },
+    "comando_reanudar_sorteo": {
+        "type": "textbox",
+        "value": "reanudarsorteo",
+        "label": "Comando para reanudar el sorteo",
+        "tooltip": "Los participantes podrán volver a participar al ejecutar este comando",
+        "group": "Administración Sorteo"
+    },
+    "comando_iniciar_sorteo": {
+        "type": "textbox",
+        "value": "iniciarsorteo",
+        "label": "Comando para iniciar el sorteo entre los participantes",
+        "tooltip": "Se iniciará el sorteo al ejecutar este comando",
+        "group": "Administración Sorteo"
+    },
+    "permisos_administracion": {
+        "type": "dropdown",
+        "value": "Streamer",
+        "items": ["Everyone","Regular","Subscriber","Moderator","Editor", "Streamer"],
+        "label": "Permisos administración del sorteo",
+        "tooltip": "Quién podrá iniciar, parar o reanudar el sorteo",
+        "group": "Administración Sorteo"
+    },
+    "comando_cambiar_objeto_sorteo": {
+        "type": "textbox",
+        "value": "cambiarsorteo",
+        "label": "Comando para cambiar el objeto a sortear",
+        "tooltip": "Con este comando se cambiará el objeto que se sorteará. El primer parámetro será el objeto"
+    }
+
+}
