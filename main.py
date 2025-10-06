@@ -224,16 +224,20 @@ def mensajesDestacados():
 def destacarMensaje():
     usuario = request.args.get("user")
     mensaje = request.args.get("mensaje").strip()
+    insertInDB = True
+    if request.args.get("noInsertInDB"):
+        insertInDB = False
     with lock:
         mensajesDestacar.append({"usuario": usuario, "mensaje": mensaje})
         # Mantener solo los últimos 50 mensajes
         if len(mensajesDestacar) > 50:
             mensajesDestacar.pop(0)
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO mensajes_destacados (usuario, mensaje) VALUES (?, ?)",(usuario, mensaje))
-    conn.commit()
-    conn.close()
+    if insertInDB:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO mensajes_destacados (usuario, mensaje) VALUES (?, ?)",(usuario, mensaje))
+        conn.commit()
+        conn.close()
     return {"status":"ok", "usuario": usuario, "mensaje": mensaje}
 
 
