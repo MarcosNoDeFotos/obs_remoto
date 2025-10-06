@@ -237,6 +237,17 @@ def destacarMensaje():
     return {"status":"ok", "usuario": usuario, "mensaje": mensaje}
 
 
+@app.route("/eliminarMensajeDestacado")
+def eliminarMensajeDestacado():
+    id = request.args.get("id")
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM mensajes_destacados where id = ?",(id,))
+    conn.commit()
+    conn.close()
+    return {"status":"ok"}
+
+
 @app.route('/streamMensajesDestacados')
 def stream():
     def event_stream():
