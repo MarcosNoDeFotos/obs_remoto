@@ -8,6 +8,10 @@
 .boton div{
     font-size: 11pt;
     color: white;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .potenciometro{

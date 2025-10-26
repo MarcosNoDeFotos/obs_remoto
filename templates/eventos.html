@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Eventos</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: transparent;
+            font-family: sans-serif;
+        }
+    </style>
+    <style id="estilosMensajesDestacados">
+        #mensaje {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            right: 10px;
+            background: rgba(160, 98, 253, 0.89);
+            border-radius: 20px;
+            padding: 20px 40px;
+            opacity: 0;
+            width: 83%;
+            transition: all 0.5s ease;
+            text-align: left;
+            font-size: xx-large;
+            font-family: cursive;
+            text-shadow: 2px 2px 3px #000000bf;
+            box-shadow: 2px 2px 8px 0px #320838;
+        }
+
+        #mensaje.visible {
+            opacity: 1;
+        }
+
+        #usuario {
+            color: #80d300;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        #texto {
+            color: white;
+        }
+    </style>
+
+    <style id="estilosLluviaElementos">
+        #lluviaContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 1s ease;
+            /* fade in/out */
+        }
+
+        #lluviaContainer.oculto {
+            opacity: 0;
+            /* ahora el fade-out será con esta clase */
+        }
+
+        .activo {
+            opacity: 1;
+            /* fade in */
+        }
+
+        .elemento {
+            position: absolute;
+            top: -50px;
+            font-size: 24px;
+            animation: caer linear forwards;
+            user-select: none;
+            opacity: 0.8;
+            z-index: 9999;
+        }
+
+        @keyframes caer {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="lluviaContainer"></div>
+    <div id="mensaje">
+        <span id="usuario"></span><span id="texto"></span>
+    </div>
+    <script id="mensajesDestacados">
+        // Mensajes destacados
+        const msgBox = document.getElementById("mensaje");
+        const userSpan = document.getElementById("usuario");
+        const textSpan = document.getElementById("texto");
+
+        const evtSource = new EventSource("/streamMensajesDestacados");
+        let cola = [];
+
+        evtSource.onmessage = (e) => {
+            try { cola.push(JSON.parse(e.data)); }
+            catch (err) { console.error(err); return; }
+
+            if (!msgBox.classList.contains("visible")) mostrarMensaje();
+        };
+
+        function mostrarMensaje() {
+            if (cola.length === 0) return;
+            const data = cola.shift();
+            userSpan.textContent = data.usuario + ":";
+            textSpan.textContent = " " + data.mensaje;
+            msgBox.classList.add("visible");
+            setTimeout(() => {
+                msgBox.classList.remove("visible");
+                setTimeout(mostrarMensaje, 500); // mostrar siguiente mensaje en cola
+            }, 15000);
+        }
+    </script>
+    <script id="lluviaElementos">
+        // Eventos para mostrar en pantalla. (Nieve, emojis, etc)
+        const evtSourceEventos = new EventSource("/streamEfectoMostrarPantalla");
+        const eventosEnPantalla = document.getElementById("eventosEnPantalla")
+        let eventoActual = null
+        let lastMessageID = 0
+        const TIMEOUT_INACTIVIDAD_STREAM = 300
+        let timeoutInactividad = null;
+        let eventoActivo = false
+        evtSourceEventos.onmessage = (e) => {
+            let evento = JSON.parse(e.data).eventoActivo
+            let messageID = lastMessageID + 1
+            console.log(eventoActual+" - "+evento)
+            if (eventoActual != evento) {
+                eventoActual = evento
+                if (eventoActivo) {
+                    desactivarEventos()
+                    setTimeout(() => {
+                        activarEvento(eventoActual)
+                    }, 1300);
+                }else{
+                    activarEvento(eventoActual)
+                }
+            }
+            lastMessageID = messageID
+            clearTimeout(timeoutInactividad)
+            timeoutInactividad = setTimeout(() => {
+                if (messageID == lastMessageID) { //No se han recibido más mensajes
+                    eventoActual = null
+                    lastMessageID = 0
+                    desactivarEventos()
+                }
+            }, TIMEOUT_INACTIVIDAD_STREAM);
+        };
+
+
+        const contenedor = document.getElementById("lluviaContainer");
+        let intervaloLluvia = null;
+
+        function crearElemento(contenido) {
+            const el = document.createElement("span");
+            el.classList.add("elemento");
+            el.textContent = contenido;
+            el.style.left = Math.random() * 100 + "vw";
+            el.style.animationDuration = 3 + Math.random() * 3 + "s";
+            el.style.fontSize = 40 + Math.random() * 140 + "px";
+            contenedor.appendChild(el);
+
+            // Eliminar el elemento al terminar la animación
+            setTimeout(() => {
+                el.remove();
+            }, 6000);
+        }
+
+        // Activar evento con fade in
+        function activarEvento(evento) {
+            if (intervaloLluvia) return; // ya activo
+            contenedor.classList.remove("oculto");
+
+            intervaloLluvia = setInterval(() => {
+                crearElemento(evento);
+            }, 300); // cada 0.3s cae uno nuevo
+            eventoActivo = true
+        }
+
+        // Desactivar evento con fade out
+        function desactivarEventos() {
+            contenedor.classList.add("oculto");
+            clearInterval(intervaloLluvia);
+            intervaloLluvia = null;
+            // Limpieza suave después del fade out
+            setTimeout(() => {
+                contenedor.innerHTML = "";
+                eventoActivo = false
+            }, 1000);
+        }
+
+    </script>
+</body>
+
+</html>

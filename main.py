@@ -26,6 +26,8 @@ mostrarBotonPulsado = False
 
 app = Flask("app")
 
+#eventos para mostrar en pantalla
+eventoActivo = None
 
 # Init DB
 conn = sqlite3.connect(DB_FILE)
@@ -44,7 +46,8 @@ conn.close()
 
 config = {}
 mensajesDestacar = []
-lock = threading.Lock()
+lockMensajesDestacados = threading.Lock()
+lockEventosMostrarEnPantalla = threading.Lock()
 
 # Botones           = B (B1, B2, etc)
 # Potenciómetros    = A (A0, A1, etc)
@@ -143,6 +146,8 @@ def _key_detection():
                         start_new_thread(ensordecerDiscord, ())
                     elif btnConfig["accion"] == "mute":
                         start_new_thread(mutearDesmutearMicro, ())
+                    elif btnConfig["accion"] == "evento_lluvia_en_pantalla":
+                        start_new_thread(toggleEventoLluviaEnPantalla, (btnConfig["data"],))
                         None
                 # if buttonName in acciones.keys():
                 #     if acciones[buttonName] == GRABAR:
@@ -182,7 +187,13 @@ def saveConfig():
         input("")
         exit(0)
 
-
+def toggleEventoLluviaEnPantalla(evento):
+    global eventoActivo
+    with lockEventosMostrarEnPantalla:
+        if not eventoActivo or (eventoActivo and eventoActivo != evento):
+            eventoActivo = evento
+        else: 
+            eventoActivo = None
 
 
 
@@ -214,10 +225,9 @@ def guardarConfigBoton():
     return json.dumps(config["botones"])
 
 
-
-@app.route("/mensajesDestacados")
+@app.route("/vistaEventos")
 def mensajesDestacados():
-    return render_template("mensajesDestacados.html")
+    return render_template("eventos.html")
 
 
 @app.route("/destacarMensaje")
@@ -227,7 +237,7 @@ def destacarMensaje():
     insertInDB = True
     if request.args.get("noInsertInDB"):
         insertInDB = False
-    with lock:
+    with lockMensajesDestacados:
         mensajesDestacar.append({"usuario": usuario, "mensaje": mensaje})
         # Mantener solo los últimos 50 mensajes
         if len(mensajesDestacar) > 50:
@@ -252,12 +262,14 @@ def eliminarMensajeDestacado():
     return {"status":"ok"}
 
 
+
+
 @app.route('/streamMensajesDestacados')
 def stream():
     def event_stream():
         last_index = 0
         while True:
-            with lock:
+            with lockMensajesDestacados:
                 nuevos = mensajesDestacar[last_index:]
             for msg in nuevos:
                 json_data = json.dumps(msg, ensure_ascii=False)
@@ -265,6 +277,20 @@ def stream():
                 last_index += 1
             time.sleep(0.1)  # pequeño delay para no saturar la CPU
     return Response(event_stream(), mimetype="text/event-stream")
+
+
+@app.route('/streamEfectoMostrarPantalla')
+def streamEventoEnPantalla():
+    def event_stream():
+        while True:
+            if eventoActivo:
+                with lockEventosMostrarEnPantalla:
+                    json_data = json.dumps({"eventoActivo": eventoActivo}, ensure_ascii=False)
+                    yield f"data: {json_data}\n\n"
+            time.sleep(0.1)  # pequeño delay para no saturar la CPU
+    return Response(event_stream(), mimetype="text/event-stream")
+
+
 
 
 
@@ -295,4 +321,4 @@ if __name__ == '__main__':
             print("No se ha podido conectar por websocket. Reintentando en 5 segundos")
             time.sleep(5)
     start_new_thread(_key_detection, ())
-    app.run(debug=False, host=server_address[0])
+    app.run(debug=True, host=server_address[0], use_reloader=False)
