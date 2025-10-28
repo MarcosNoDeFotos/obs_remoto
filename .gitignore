@@ -2,3 +2,4 @@ mensajesDestacados.db
 chatbot
 __pycache__/
 test.py
+*.lnk

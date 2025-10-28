@@ -36,7 +36,8 @@ cursor.execute("""
     CREATE TABLE IF NOT EXISTS mensajes_destacados (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         usuario TEXT NOT NULL,
-        mensaje TEXT NOT NULL
+        mensaje TEXT NOT NULL,
+        origen TEXT NOT NULL
     )
 """)
 conn.commit()
@@ -233,19 +234,20 @@ def mensajesDestacados():
 @app.route("/destacarMensaje")
 def destacarMensaje():
     usuario = request.args.get("user")
+    origen = request.args.get("origen")
     mensaje = request.args.get("mensaje").strip()
     insertInDB = True
     if request.args.get("noInsertInDB"):
         insertInDB = False
     with lockMensajesDestacados:
-        mensajesDestacar.append({"usuario": usuario, "mensaje": mensaje})
+        mensajesDestacar.append({"usuario": usuario, "mensaje": mensaje, "origen": origen})
         # Mantener solo los últimos 50 mensajes
         if len(mensajesDestacar) > 50:
             mensajesDestacar.pop(0)
     if insertInDB:
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO mensajes_destacados (usuario, mensaje) VALUES (?, ?)",(usuario, mensaje))
+        cursor.execute("INSERT INTO mensajes_destacados (usuario, mensaje, origen) VALUES (?, ?, ?)",(usuario, mensaje, origen))
         conn.commit()
         conn.close()
     return {"status":"ok", "usuario": usuario, "mensaje": mensaje}
@@ -299,10 +301,10 @@ def getMensajesDestacados():
     """Devuelve todos los mensajes destacados en JSON"""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    cursor.execute("SELECT id, usuario, mensaje FROM mensajes_destacados ORDER BY id ASC")
+    cursor.execute("SELECT id, usuario, mensaje, origen FROM mensajes_destacados ORDER BY id ASC")
     filas = cursor.fetchall()
     conn.close()
-    result = [{"id": fila[0], "usuario": fila[1], "mensaje": fila[2]} for fila in filas]
+    result = [{"id": fila[0], "usuario": fila[1], "mensaje": fila[2], "origen": fila[3]} for fila in filas]
     return json.dumps(result)
 
 

@@ -18,7 +18,6 @@
             top: 30px;
             left: 30px;
             right: 10px;
-            background: rgba(160, 98, 253, 0.89);
             border-radius: 20px;
             padding: 20px 40px;
             opacity: 0;
@@ -29,6 +28,14 @@
             font-family: cursive;
             text-shadow: 2px 2px 3px #000000bf;
             box-shadow: 2px 2px 8px 0px #320838;
+        }
+
+        .twitch-color{
+            background: rgba(160, 98, 253, 0.89);
+        }
+
+        .youtube-color{
+            background: rgba(139, 19, 19, 0.89);
         }
 
         #mensaje.visible {
@@ -118,8 +125,16 @@
         function mostrarMensaje() {
             if (cola.length === 0) return;
             const data = cola.shift();
+            console.log(data)
             userSpan.textContent = data.usuario + ":";
             textSpan.textContent = " " + data.mensaje;
+            if (data.origen == "youtube") {
+                msgBox.classList.remove("twitch-color")
+                msgBox.classList.add("youtube-color")
+            }else if (data.origen == "twitch") {
+                msgBox.classList.remove("youtube-color")
+                msgBox.classList.add("twitch-color")   
+            }
             msgBox.classList.add("visible");
             setTimeout(() => {
                 msgBox.classList.remove("visible");
